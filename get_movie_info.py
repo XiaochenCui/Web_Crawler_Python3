@@ -3,7 +3,9 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-# url = 'http://movie.douban.com/'
+# import mysql_ope
+
+# url = 'http://movie.douban.com/subject/3292120/'
 # request = requests.get(url)
 # data = request.text
 # soup = BeautifulSoup(data, 'html.parser')
@@ -34,7 +36,15 @@ def get_info(data):
 		return s
 		
 	# 创建存储影片信息的dict
-	info = {}
+	info = {
+		'score': None,
+		'name': None,
+		'starring': None,
+		'release_date': None,
+		'director': None,
+		'release_year': None,
+		'producing_countries': None,
+	}
 
 	soup = BeautifulSoup(data, 'html.parser')
 
@@ -60,9 +70,11 @@ def get_info(data):
 	
 	# 抓取电影年份
 	r = soup.find('span', {'class': 'year'})
-	i = r.text[1:-1]
-	# print('6',i)
-	info['release_year'] = i
+	if r is not None:
+		i = r.text[1:-1]
+		info['release_year'] = i
+	else:
+		info['release_year'] = 0
 	
 	# 抓取制片国家/地区
 	link_regex = re.compile('制片国家\/地区:<\/span>\s*(.+?)\s*<br')
@@ -71,11 +83,11 @@ def get_info(data):
 	s = set()
 	for i in r_list:
 		i = i.strip()
-		# print('7',i)
 		s.add(i)
 	info['producing_countries'] = s
 
 	# print(info)
 	return info
 
-# get_info(data)
+# info = get_info(data)
+# mysql_ope.info_save(info)

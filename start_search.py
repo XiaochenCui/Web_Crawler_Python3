@@ -22,7 +22,7 @@ queue.append(url_start)
 # 已经抓取的页面数count
 count = 0
 # 当待访问页面不为空时，一直循环
-while queue and count <= 20:
+while queue and count <= 5000:
 	time.sleep(1)
 
 	url = queue.popleft() # 队首元素出队
@@ -44,7 +44,7 @@ while queue and count <= 20:
 
 	# 提取影片信息
 	info = get_movie_info.get_info(data)
-	if(len(info) is not 0):
+	if(info['name'] is not None):
 		print(info)
 		mysql_ope.info_save(info)
 		pass
