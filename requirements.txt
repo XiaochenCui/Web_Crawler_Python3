@@ -1,0 +1,14 @@
+backports.shutil-get-terminal-size==1.0.0
+beautifulsoup4==4.4.1
+decorator==4.0.9
+ipython==4.2.0
+ipython-genutils==0.1.0
+mongoengine==0.10.6
+pexpect==4.0.1
+pickleshare==0.7.2
+ptyprocess==0.5.1
+pymongo==3.2.2
+pytz==2016.4
+requests==2.10.0
+simplegeneric==0.8.1
+traitlets==4.2.1
