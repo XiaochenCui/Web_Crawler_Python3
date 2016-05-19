@@ -1,59 +1,78 @@
 import re
 import requests
 import time
-# import sys
-# print(sys.path)
 from collections import deque
-# from bs4 import BeautifulSoup
 
-import mysql_ope
-import get_movie_info
-# from my_package import file_ope
+from get_movie_info import get_movie_info
+from model import *
 
-# 待访问的集合queue
-queue = deque()
-# 访问过的集合visited
-visited = set()
 
-# 入口页面
-url_start = "http://movie.douban.com/"
+class Search(object):
+    def __init__(self):
+        self.count = 0
 
-queue.append(url_start)
-# 已经抓取的页面数count
-count = 0
-# 当待访问页面不为空时，一直循环
-while queue and count <= 5000:
-	time.sleep(1)
+    def main(self):
+        # 待访问的集合queue
+        queue = deque()
 
-	url = queue.popleft() # 队首元素出队
-	visited |= {url} # 标记为已访问
+        # 入口页面
+        url_start = "http://movie.douban.com/"
+        url = Url(url=url_start)
 
-	print('已经抓取: ' + str(count) + '   正在抓取 <---  ' + url)
-	count += 1
+        queue.append(url)
 
-	# 返回url对应的页面内容
-	# 用try...处理异常
-	try:
-		request = requests.get(url)
-		data = request.text
-	except Exception:
-		continue
+        # count = 0
 
-	# 存储页面
-	# file_ope.file_ope.file_save(data)
+        while queue or Url.objects(access=False):
+            print("将--{}--个url导入内存".format(len(queue)))
+            self.traversal_queue(queue)
 
-	# 提取影片信息
-	info = get_movie_info.get_info(data)
-	if(info['name'] is not None):
-		print(info)
-		mysql_ope.info_save(info)
-		pass
+            url_queue = list(Url.objects(access=False)[:2000])
+            print(url_queue)
+            print("从数据库中获取--{}--个url".format(len(url_queue)))
+            queue.extend(url_queue)
 
-	# 正则表达式提取页面中所有队列, 并判断是否已经访问过, 然后加入待爬队列
-	link_regex = re.compile('href="(http://movie\.douban\.com/subject/\d+/).+?"')
+    def traversal_queue(self, queue):
+        while queue:
+            time.sleep(1)
 
-	for link in link_regex.findall(data):
-		if link not in visited and link not in queue:
-			queue.append(link)
-			print('加入队列 --->  ' + link)
+            url = queue.popleft()  # 队首元素出队
+
+            print('已经抓取: ' + str(self.count) + '   正在抓取 <---  ' + url.url)
+            self.count += 1
+
+            # 返回url对应的页面内容
+            # 用try...处理异常
+            try:
+                request = requests.get(url.url, timeout=5)
+                data = request.text
+            except Exception:
+                continue
+
+            # 提取影片信息
+            info = get_movie_info(url.url, data)
+            if info['name']:
+                print(info)
+                movie = Movie(**info)
+                if movie:
+                    movie.update()
+
+            # 正则表达式提取页面中所有队列, 并判断是否已经访问过, 然后加入待爬队列
+            link_regex = re.compile('href="(https?://movie\.douban\.com/subject/\d+).+?"')
+
+            for link in link_regex.findall(data):
+                if not Url.objects(url=link).first() and link not in queue:
+                    url_new = Url(url=link)
+                    if len(queue) < 2000:
+                        queue.append(url_new)
+                        print('加入队列 --->  ' + link)
+                    else:
+                        url.update()
+
+            url.update(True)
+
+if __name__ == '__main__':
+    search = Search()
+    search.main()
+
 
