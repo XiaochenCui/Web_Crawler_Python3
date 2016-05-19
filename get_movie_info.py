@@ -6,26 +6,6 @@ from model import *
 from pytz import *
 
 
-# import mysql_ope
-
-# url_string = 'http://movie.douban.com/subject/3292120/'
-# request = requests.get(url_string)
-# data = request.text
-# soup = BeautifulSoup(data, 'html.parser')
-
-
-# count = 0
-# def get_info_single(tag_name, attrs):
-# 	soup = BeautifulSoup(data, 'html.parser')
-# 	global count
-# 	count += 1
-# 	r = soup.find_all(tag_name, attrs)
-# 	s = set()
-# 	for i in r:
-# 		print(str(count),i.text)
-# 		s.add(i.text)
-# 	return s
-
 def get_movie_info(url_string, data):
     def get_info_single(tag_name, attrs):
         r = soup.find_all(tag_name, attrs)
@@ -114,28 +94,8 @@ def get_movie_info(url_string, data):
     # print(info)
     return info
 
-    # info = get_info(data)
-    # mysql_ope.info_save(info)
 
-
-# info = get_movie_info(url_string, data)
-# print(info)
-# movie = Movie(**info)
-# # print('movie.__dict__:\n:'+str(movie.__dict__))
-# # print('vars(movie):\n:'+str(vars(movie)))
-# # print('dir(movie):\n:'+str(dir(movie)))
-# # for attr in dir(movie):
-# #     try:
-# #         print(movie.attr)
-# #     except KeyError:
-# #         continue
-# #     except AttributeError:
-# #         continue
-# print(movie.index)
-# print(movie.name)
-# print(movie.score)
-# print(movie.release_date)
-def stor_movie(url):
+def store_movie(url):
     request = requests.get(url)
     data = request.text
     info = get_movie_info(url, data)
@@ -143,5 +103,3 @@ def stor_movie(url):
     movie = Movie(**info)
     if movie:
         movie.update()
-
-        # stor_movie('https://movie.douban.com/subject/26591654/?tag=%E7%83%AD%E9%97%A8&from=gaia')
