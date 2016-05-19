@@ -12,6 +12,9 @@ class Search(object):
         self.count = 0
 
     def main(self):
+        # 连接数据库
+        connect_mongodb()
+
         # 待访问的集合queue
         queue = deque()
 
@@ -70,9 +73,3 @@ class Search(object):
                         url.update()
 
             url.update(True)
-
-if __name__ == '__main__':
-    search = Search()
-    search.main()
-
-

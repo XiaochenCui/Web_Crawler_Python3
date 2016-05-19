@@ -62,7 +62,3 @@ class UrlMap(Document):
             'url'
         ]
     }
-
-
-# connect_mongodb()
-# url_update("http://456.com")

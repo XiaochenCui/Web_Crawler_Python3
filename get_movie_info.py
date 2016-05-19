@@ -73,7 +73,7 @@ def get_movie_info(url_string, data):
         info['release_year'] = 0
 
     # 抓取制片国家/地区
-    link_regex = re.compile('制片国家\/地区:<\/span>\s*(.+?)\s*<br')
+    link_regex = re.compile('制片国家/地区:</span>\s*(.+?)\s*<br')
     r = link_regex.findall(data)[0]
     r_list = r.split('/')
     s = set()

@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
-# daemon.py
-
 import os
 import sys
 import atexit
 import signal
 
-import start_search
+from start_search import Search
+
 
 def daemonize(pidfile, *, stdin='/dev/null',
                           stdout='/dev/null',
@@ -57,6 +55,7 @@ def daemonize(pidfile, *, stdin='/dev/null',
 
     signal.signal(signal.SIGTERM, sigterm_handler)
 
+
 def main():
     import time
     sys.stdout.write('Daemon started with pid {}\n'.format(os.getpid()))
@@ -80,7 +79,8 @@ if __name__ == '__main__':
             print(e, file=sys.stderr)
             raise SystemExit(1)
 
-        main()
+        search = Search()
+        search.main()
 
     elif sys.argv[1] == 'stop':
         if os.path.exists(PIDFILE):
