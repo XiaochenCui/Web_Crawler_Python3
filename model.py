@@ -10,13 +10,14 @@ def connect_mongodb():
 class Movie(Document):
     index = IntField(required=True, default=0)
     name = StringField(max_length=100, required=True)
-    score_history = ListField(DictField())
+    score_history = DictField()
     score = FloatField()
-    release_date = ListField(DictField())
+    release_date = DictField()
     release_year = IntField()
     producing_countries = ListField(StringField())
     starring = ListField(StringField())
     director = ListField(StringField())
+    screenwriter = ListField(StringField())
     init_date = DateTimeField(default=datetime.datetime.utcnow())
     update_date = DateTimeField(default=datetime.datetime.utcnow())
     meta = {

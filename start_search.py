@@ -30,7 +30,7 @@ class Search(object):
             print("将--{}--个url导入内存".format(len(queue)))
             self.traversal_queue(queue)
 
-            url_queue = list(Url.objects(access=False)[:2000])
+            url_queue = list(Url.objects(access=False)[:200])
             print(url_queue)
             print("从数据库中获取--{}--个url".format(len(url_queue)))
             queue.extend(url_queue)
@@ -54,7 +54,7 @@ class Search(object):
 
             # 提取影片信息
             info = get_movie_info(url.url, data)
-            if info['name']:
+            if info['index']:
                 print(info)
                 movie = Movie(**info)
                 if movie:
@@ -66,7 +66,7 @@ class Search(object):
             for link in link_regex.findall(data):
                 if not Url.objects(url=link).first() and link not in queue:
                     url_new = Url(url=link)
-                    if len(queue) < 2000:
+                    if len(queue) < 200:
                         queue.append(url_new)
                         print('加入队列 --->  ' + link)
                     else:

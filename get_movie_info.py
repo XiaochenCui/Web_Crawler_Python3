@@ -1,14 +1,18 @@
 import re
 import requests
 import datetime
+from collections import defaultdict
 from bs4 import BeautifulSoup
 from model import *
 from pytz import *
 
 
 def get_movie_info(url_string, data):
-    def get_info_single(tag_name, attrs):
-        r = soup.find_all(tag_name, attrs)
+    def get_info_single(tag_name, attrs=None, data=None):
+        soup_local = soup
+        if data:
+            soup_local = BeautifulSoup(data, 'html.parser')
+        r = soup_local.find_all(tag_name, attrs)
         s = list()
         for i in r:
             s.append(i.text)
@@ -19,13 +23,14 @@ def get_movie_info(url_string, data):
         'index': None,
         'name': None,
         'score': None,
-        'score_history': list(),
-        'release_date': list(),
+        'score_history': defaultdict(str),
+        'release_date': defaultdict(str),
         'release_year': None,
         'producing_countries': None,
         'starring': None,
         'director': None,
-        'update_date': None
+        'update_date': None,
+        'screenwriter': None
     }
 
     utc_time = utc.localize(datetime.datetime.utcnow())
@@ -50,9 +55,10 @@ def get_movie_info(url_string, data):
     try:
         score = get_info_single('strong', {'property': 'v:average'})[0]
         info['score'] = float(score)
-        info['score_history'].append({utc_string: score})
+        info['score_history'][utc_string] = score
     except Exception:
         pass
+
     # 抓取上映日期
     date_list = get_info_single('span', {'property': 'v:initialReleaseDate'})
     for e in date_list:
@@ -61,8 +67,8 @@ def get_movie_info(url_string, data):
         try:
             country = e.split('(')[1]
         except Exception:
-            country = None
-        info['release_date'].append({country: date})
+            country = ""
+        info['release_date'][country] = date
 
     # 抓取电影年份
     r = soup.find('span', {'class': 'year'})
@@ -88,6 +94,11 @@ def get_movie_info(url_string, data):
     # 抓取导演
     info['director'] = get_info_single('a', {'rel': 'v:directedBy'})
 
+    # 抓取编剧
+    link_regex = re.compile('编剧</span>(.|/s)+?</span>')
+    r = link_regex.findall(data)[0]
+    info['screenwriter'] = get_info_single('a', data=r)
+
     # 更新抓取日期
     info['update_date'] = utc_time
 
@@ -103,3 +114,7 @@ def store_movie(url):
     movie = Movie(**info)
     if movie:
         movie.update()
+
+# 测试get_movie_info
+# connect_mongodb()
+# store_movie("https://movie.douban.com/subject/2977957/")
