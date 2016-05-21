@@ -11,35 +11,35 @@ python 3.3+
 
 2. 安装库
 
-```bash
-$ pip install -r requirements.txt
-```
+    ```bash
+    $ pip install -r requirements.txt
+    ```
 
 3. 运行daemon.py:
 
-```bash
-$ python daemon.py start
-```
+    ```bash
+    $ python daemon.py start
+    ```
 
 ## 其他:
 
 1. 结束程序:
 
-```bash
-$ python daemon.py stop
-```
+    ```bash
+    $ python daemon.py stop
+    ```
 
 2. 查看运行日志:
 
-```bash
-$ tail -f /tmp/daemon.log
-```
+    ```bash
+    $ tail -f /tmp/daemon.log
+    ```
 
 3. 查看进程pid:
 
-```bash
-$ tail -f /tmp/daemon.pid
-```
+    ```bash
+    $ tail -f /tmp/daemon.pid
+    ```
 
 ## 更新日志
 
