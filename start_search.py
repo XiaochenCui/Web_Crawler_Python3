@@ -70,7 +70,7 @@ class Search(object):
                     url_new = Url(url=link)
                     if len(queue) < 200 and self.add_to_queue:
                         queue.append(url_new)
-                        print('加入队列 --->  [{position}]{url}'.format(position=len(queue), url=link))
+                        print('加入队列 --->  [{position}]      {url}'.format(position=len(queue), url=link))
                     else:
                         self.add_to_queue = False
                         url.update()
