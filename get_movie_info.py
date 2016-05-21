@@ -59,17 +59,22 @@ def get_movie_info(url_string, data):
     if score:
         info['score'] = float(score)
         info['score_history'][utc_string] = score
+    else:
+        info['score_history'] = None
 
     # 抓取上映日期
     date_list = get_info_single('span', {'property': 'v:initialReleaseDate'})
-    for e in date_list:
-        e = str(e[:-1])
-        date = e.split('(')[0]
-        try:
-            country = e.split('(')[1]
-        except IndexError:
-            country = ""
-        info['release_date'][country] = date
+    if date_list:
+        for e in date_list:
+            e = str(e[:-1])
+            date = e.split('(')[0]
+            try:
+                country = e.split('(')[1]
+            except IndexError:
+                country = ""
+            info['release_date'][country] = date
+    else:
+        info['release_date'] = None
 
     # 抓取电影年份
     result = soup.find('span', {'class': 'year'})
@@ -117,5 +122,5 @@ def store_movie(url):
 
 
 # 测试get_movie_info
-# connect_mongodb()
-# store_movie("https://movie.douban.com/subject/2148836/?from=subject-page")
+connect_mongodb()
+store_movie("https://movie.douban.com/subject/26337908/")

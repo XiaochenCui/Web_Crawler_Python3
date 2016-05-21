@@ -1,6 +1,46 @@
 # Web_Crawler_Python3
 用python3制作的网络爬虫（爬取 [豆瓣电影](https://movie.douban.com/) 的电影信息）
 
+运行环境:
+
+python 3.3+
+
+使用说明:
+
+1, 安装 [Mongodb](https://docs.mongodb.com/manual/installation/)
+
+2, 安装库
+
+```bash
+$ pip install -r requirements.txt
+```
+
+3, 运行daemon.py:
+
+```bash
+$ python daemon.py start
+```
+
+其他:
+
+1, 结束程序:
+
+```bash
+$ python daemon.py stop
+```
+
+2, 查看运行日志:
+
+```bash
+$ tail -f /tmp/daemon.log
+```
+
+3, 查看进程pid:
+
+```bash
+$ tail -f /tmp/daemon.pid
+```
+
 ## V 1.1
 -bug修复
 
