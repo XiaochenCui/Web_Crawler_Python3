@@ -78,7 +78,7 @@ def get_movie_info(url_string, data):
 
     # 抓取电影年份
     result = soup.find('span', {'class': 'year'})
-    if result:
+    if result and result.text != '(？)' :
         i = result.text[1:-1]
         info['release_year'] = i
 
@@ -123,4 +123,4 @@ def store_movie(url):
 
 # 测试get_movie_info
 # connect_mongodb()
-# store_movie("https://movie.douban.com/subject/26290642/")
+# store_movie("https://movie.douban.com/subject/5969311/")
