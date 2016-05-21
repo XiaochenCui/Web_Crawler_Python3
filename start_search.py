@@ -10,6 +10,7 @@ from model import *
 class Search(object):
     def __init__(self):
         self.count = 0
+        self.add_to_queue = True
 
     def main(self):
         # 连接数据库
@@ -28,6 +29,7 @@ class Search(object):
 
         while queue or Url.objects(access=False):
             print("将--{}--个url导入内存".format(len(queue)))
+            self.add_to_queue = True
             self.traversal_queue(queue)
 
             url_queue = list(Url.objects(access=False)[:200])
@@ -63,16 +65,14 @@ class Search(object):
             # 正则表达式提取页面中所有队列, 并判断是否已经访问过, 然后加入待爬队列
             link_regex = re.compile('href="(https?://movie\.douban\.com/subject/\d+).+?"')
 
-            add_to_queue = True
-
             for link in link_regex.findall(data):
                 if not Url.objects(url=link).first() and link not in queue:
                     url_new = Url(url=link)
-                    if len(queue) < 200 and add_to_queue:
+                    if len(queue) < 200 and self.add_to_queue:
                         queue.append(url_new)
-                        print('加入队列 --->  ' + link)
+                        print('加入队列 --->  [{position}]{url}'.format(position=len(queue), url=link))
                     else:
-                        add_to_queue = False
+                        self.add_to_queue = False
                         url.update()
 
             url.update(True)

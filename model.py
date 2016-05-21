@@ -7,6 +7,12 @@ def connect_mongodb():
     connect('movie')
 
 
+def remove_data():
+    connect_mongodb()
+    Movie.drop_collection()
+    Url.drop_collection()
+
+
 class Movie(Document):
     index = IntField(required=True, default=0)
     name = StringField(max_length=100, required=True)

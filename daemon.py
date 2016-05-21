@@ -4,6 +4,7 @@ import atexit
 import signal
 
 from start_search import Search
+from model import remove_data
 
 
 def daemonize(pidfile, *, stdin='/dev/null',
@@ -89,6 +90,20 @@ if __name__ == '__main__':
         else:
             print('Not running', file=sys.stderr)
             raise SystemExit(1)
+
+    elif sys.argv[1] == 'clean':
+        try:
+            daemonize(PIDFILE,
+                      stdout='/tmp/daemon.log',
+                      stderr='/tmp/daemon.log')
+        except RuntimeError as e:
+            print(e, file=sys.stderr)
+            raise SystemExit(1)
+
+        remove_data()
+        print('All data clean, program will exit', file=sys.stdout)
+        with open(PIDFILE) as f:
+            os.kill(int(f.read()), signal.SIGTERM)
 
     else:
         print('Unknown command {!r}'.format(sys.argv[1]), file=sys.stderr)
