@@ -69,7 +69,7 @@ class Search(object):
             # 正则表达式提取页面中所有队列, 并判断是否已经访问过, 然后加入待爬队列
             link_regex = re.compile('href="(https?://movie\.douban\.com/subject/\d+).+?"')
 
-            for link in link_regex.findall(data):
+            for link in set(link_regex.findall(data)):
                 if not Url.objects(url=link).first() and link not in queue:
                     url_new = Url(url=link)
                     if len(queue) < 200 and self.add_to_queue:
