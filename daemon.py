@@ -97,7 +97,7 @@ if __name__ == '__main__':
             with open(PIDFILE) as f:
                 os.kill(int(f.read()), signal.SIGTERM)
         remove_data()
-        if os.path.exists(PIDFILE):
+        if os.path.exists(LOGFILE):
             os.remove(LOGFILE)
         print('All data clean, program has exit')
 
