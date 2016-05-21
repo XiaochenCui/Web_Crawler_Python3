@@ -73,6 +73,6 @@ class Search(object):
                         print('加入队列 --->  [{position}]      {url}'.format(position=len(queue), url=link))
                     else:
                         self.add_to_queue = False
-                        url.update()
+                        Url.add_url(link)
 
             url.update(True)

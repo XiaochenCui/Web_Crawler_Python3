@@ -54,12 +54,8 @@ class Url(Document):
 
     @classmethod
     def add_url(cls, url_string):
-        url = Url.objects(url=url_string).first()
-        if not url:
-            url = Url(url=url_string)
-            url.save()
-        else:
-            url.update()
+        url = Url(url=url_string)
+        url.save()
 
 class UrlMap(Document):
     url = ReferenceField('Url',reverse_delete_rule=CASCADE)

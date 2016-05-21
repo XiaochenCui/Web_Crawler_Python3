@@ -55,9 +55,9 @@ def get_movie_info(url_string, data):
     info['name'] = get_info_single('span', {'property': 'v:itemreviewed'})[0]
 
     # 抓取电影分数
-    score = get_info_single('strong', {'property': 'v:average'})[0]
+    score = get_info_single('strong', {'property': 'v:average'})
     if score:
-        info['score'] = float(score)
+        info['score'] = float(score[0])
         info['score_history'][utc_string] = score
     else:
         info['score_history'] = None
@@ -123,4 +123,4 @@ def store_movie(url):
 
 # 测试get_movie_info
 # connect_mongodb()
-# store_movie("https://movie.douban.com/subject/26337908/")
+# store_movie("https://movie.douban.com/subject/26708775/")
