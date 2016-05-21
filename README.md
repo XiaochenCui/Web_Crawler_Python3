@@ -41,7 +41,7 @@ python 3.3+
     $ tail -f /tmp/daemon.pid
     ```
     
-4. 删除数据库中所有电影及url数据:
+4. 结束程序，删除数据库中所有数据及日志文件:
 
     ```bash
     $ python daemon.py clean
@@ -51,6 +51,7 @@ python 3.3+
 
 ### V 1.1
 -bug修复
+-发生异常退出时将内存中的url存入数据库
 
 ### V 1.0
 -数据库更换为mongodb  

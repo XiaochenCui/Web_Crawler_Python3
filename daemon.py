@@ -66,6 +66,7 @@ def main():
 
 if __name__ == '__main__':
     PIDFILE = '/tmp/daemon.pid'
+    LOGFILE = '/tmp/daemon.log'
 
     if len(sys.argv) != 2:
         print('Usage: {} [start|stop]'.format(sys.argv[0]), file=sys.stderr)
@@ -92,18 +93,13 @@ if __name__ == '__main__':
             raise SystemExit(1)
 
     elif sys.argv[1] == 'clean':
-        try:
-            daemonize(PIDFILE,
-                      stdout='/tmp/daemon.log',
-                      stderr='/tmp/daemon.log')
-        except RuntimeError as e:
-            print(e, file=sys.stderr)
-            raise SystemExit(1)
-
+        if os.path.exists(PIDFILE):
+            with open(PIDFILE) as f:
+                os.kill(int(f.read()), signal.SIGTERM)
         remove_data()
-        print('All data clean, program will exit', file=sys.stdout)
-        with open(PIDFILE) as f:
-            os.kill(int(f.read()), signal.SIGTERM)
+        if os.path.exists(PIDFILE):
+            os.remove(LOGFILE)
+        print('All data clean, program has exit')
 
     else:
         print('Unknown command {!r}'.format(sys.argv[1]), file=sys.stderr)

@@ -8,34 +8,38 @@ from model import *
 
 
 class Search(object):
+
     def __init__(self):
         self.count = 0
         self.add_to_queue = True
+        # 待访问的集合queue
+        self.queue = deque()
 
     def main(self):
         # 连接数据库
         connect_mongodb()
 
-        # 待访问的集合queue
-        queue = deque()
-
         # 入口页面
         url_start = "http://movie.douban.com/"
         url = Url(url=url_start)
 
-        queue.append(url)
+        self.queue.append(url)
 
-        # count = 0
-
-        while queue or Url.objects(access=False):
-            print("将--{}--个url导入内存".format(len(queue)))
-            self.add_to_queue = True
-            self.traversal_queue(queue)
-
+        while self.queue or Url.objects(access=False):
             url_queue = list(Url.objects(access=False)[:200])
-            print(url_queue)
-            print("从数据库中获取--{}--个url".format(len(url_queue)))
-            queue.extend(url_queue)
+            print("从数据库中获取---{}---个url".format(len(url_queue)))
+            self.queue.extend(url_queue)
+
+            print("现在有---{}---个url在队列中".format(len(self.queue)))
+            self.add_to_queue = True
+
+            # 异常退出时将内存中的url存入数据库
+            try:
+                self.traversal_queue(self.queue)
+            except Exception:
+                for url in self.queue:
+                    url.save()
+                raise SystemExit(1)
 
     def traversal_queue(self, queue):
         while queue:
@@ -57,7 +61,7 @@ class Search(object):
             # 提取影片信息
             info = get_movie_info(url.url, data)
             if info['index']:
-                print(info)
+                print('电影---{}---的信息:\n{}'.format(info['name'], info))
                 movie = Movie(**info)
                 if movie:
                     movie.update()
