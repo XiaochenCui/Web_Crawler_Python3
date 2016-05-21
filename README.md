@@ -40,6 +40,12 @@ python 3.3+
     ```bash
     $ tail -f /tmp/daemon.pid
     ```
+    
+4. 删除数据库中所有电影及url数据:
+
+    ```bash
+    $ python daemon.py clean
+    ```
 
 ## 更新日志
 
