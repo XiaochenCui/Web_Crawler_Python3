@@ -56,7 +56,7 @@ def get_movie_info(url_string, data):
 
     # 抓取电影分数
     score = get_info_single('strong', {'property': 'v:average'})
-    if score:
+    if score and score[0] != '':
         info['score'] = float(score[0])
         info['score_history'][utc_string] = score
     else:
@@ -122,5 +122,5 @@ def store_movie(url):
 
 
 # 测试get_movie_info
-# connect_mongodb()
-# store_movie("https://movie.douban.com/subject/26708775/")
+connect_mongodb()
+store_movie("https://movie.douban.com/subject/26290642/")
