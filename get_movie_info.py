@@ -1,4 +1,6 @@
 import re
+from functools import wraps
+
 import requests
 import datetime
 from collections import defaultdict
@@ -13,10 +15,12 @@ def get_movie_info(url_string, data):
         if data:
             soup_local = BeautifulSoup(data, 'html.parser')
         r = soup_local.find_all(tag_name, attrs)
-        s = list()
-        for i in r:
-            s.append(i.text)
-        return s
+        if r:
+            s = list()
+            for i in r:
+                s.append(i.text)
+            return s
+        return None
 
     # 创建存储影片信息的dict
     info = {
@@ -39,25 +43,22 @@ def get_movie_info(url_string, data):
     soup = BeautifulSoup(data, 'html.parser')
 
     # 如果不是电影页面，返回null
-    r = soup.find_all('span', {'property': 'v:itemreviewed'})
-    if len(r) is 0:
+    result = soup.find_all('span', {'property': 'v:itemreviewed'})
+    if not result:
         return info
 
     # 获取影片index
     index_regex = re.compile('.+/subject/(\d+).*')
     info['index'] = index_regex.findall(url_string)[0]
-    soup = BeautifulSoup(data, 'html.parser')
 
     # 抓取电影名称
     info['name'] = get_info_single('span', {'property': 'v:itemreviewed'})[0]
 
     # 抓取电影分数
-    try:
-        score = get_info_single('strong', {'property': 'v:average'})[0]
+    score = get_info_single('strong', {'property': 'v:average'})[0]
+    if score:
         info['score'] = float(score)
         info['score_history'][utc_string] = score
-    except Exception:
-        pass
 
     # 抓取上映日期
     date_list = get_info_single('span', {'property': 'v:initialReleaseDate'})
@@ -66,17 +67,15 @@ def get_movie_info(url_string, data):
         date = e.split('(')[0]
         try:
             country = e.split('(')[1]
-        except Exception:
+        except IndexError:
             country = ""
         info['release_date'][country] = date
 
     # 抓取电影年份
-    r = soup.find('span', {'class': 'year'})
-    if r is not None:
-        i = r.text[1:-1]
+    result = soup.find('span', {'class': 'year'})
+    if result:
+        i = result.text[1:-1]
         info['release_year'] = i
-    else:
-        info['release_year'] = 0
 
     # 抓取制片国家/地区
     link_regex = re.compile('制片国家/地区:</span>\s*(.+?)\s*<br')
@@ -95,14 +94,15 @@ def get_movie_info(url_string, data):
     info['director'] = get_info_single('a', {'rel': 'v:directedBy'})
 
     # 抓取编剧
-    link_regex = re.compile('编剧</span>(.|/s)+?</span>')
-    r = link_regex.findall(data)[0]
-    info['screenwriter'] = get_info_single('a', data=r)
+    link_regex = re.compile('(编剧</span>(.|/s)+?</span>)')
+    result = link_regex.findall(data)
+    if result:
+        data = result[0][0]
+        info['screenwriter'] = get_info_single('a', data=data)
 
     # 更新抓取日期
     info['update_date'] = utc_time
 
-    # print(info)
     return info
 
 
@@ -115,6 +115,7 @@ def store_movie(url):
     if movie:
         movie.update()
 
+
 # 测试get_movie_info
 # connect_mongodb()
-# store_movie("https://movie.douban.com/subject/2977957/")
+# store_movie("https://movie.douban.com/subject/2148836/?from=subject-page")

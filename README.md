@@ -1,6 +1,9 @@
 # Web_Crawler_Python3
 用python3制作的网络爬虫（爬取 [豆瓣电影](https://movie.douban.com/) 的电影信息）
 
+## V 1.1
+-bug修复
+
 ## V 1.0
 -数据库更换为mongodb  
 -异常处理更完善  
