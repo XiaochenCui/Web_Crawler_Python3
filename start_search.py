@@ -1,4 +1,6 @@
 import re
+import traceback
+
 import requests
 import time
 from collections import deque
@@ -37,9 +39,11 @@ class Search(object):
             try:
                 self.traversal_queue(self.queue)
             except Exception as e:
+                print("Exception occured:")
+                traceback.print_exc()
                 for url in self.queue:
                     url.save()
-
+                print("---{}---个url被临时导入数据库".format(len(self.queue)))
                 raise SystemExit(1)
 
     def traversal_queue(self, queue):

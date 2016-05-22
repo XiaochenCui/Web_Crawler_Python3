@@ -6,6 +6,8 @@ import signal
 from start_search import Search
 from model import remove_data
 
+PIDFILE = '/tmp/daemon.pid'
+LOGFILE = '/tmp/daemon.log'
 
 def daemonize(pidfile, *, stdin='/dev/null',
                           stdout='/dev/null',
@@ -65,8 +67,6 @@ def main():
         time.sleep(10)
 
 if __name__ == '__main__':
-    PIDFILE = '/tmp/daemon.pid'
-    LOGFILE = '/tmp/daemon.log'
 
     if len(sys.argv) != 2:
         print('Usage: {} [start|stop]'.format(sys.argv[0]), file=sys.stderr)

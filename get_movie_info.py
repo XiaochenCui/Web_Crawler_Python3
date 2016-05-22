@@ -124,5 +124,5 @@ def store_movie(url):
 
 
 # 测试get_movie_info
-connect_mongodb()
-store_movie("https://movie.douban.com/subject/4009950/")
+# connect_mongodb()
+# store_movie("https://movie.douban.com/subject/4009950/")
