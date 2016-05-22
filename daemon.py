@@ -8,6 +8,7 @@ from model import remove_data
 
 PIDFILE = '/tmp/daemon.pid'
 LOGFILE = '/tmp/daemon.log'
+ERRFILE = '/tmp/daemon.err'
 
 def daemonize(pidfile, *, stdin='/dev/null',
                           stdout='/dev/null',
@@ -75,8 +76,8 @@ if __name__ == '__main__':
     if sys.argv[1] == 'start':
         try:
             daemonize(PIDFILE,
-                      stdout='/tmp/daemon.log',
-                      stderr='/tmp/daemon.log')
+                      stdout=LOGFILE,
+                      stderr=ERRFILE)
         except RuntimeError as e:
             print(e, file=sys.stderr)
             raise SystemExit(1)
@@ -88,6 +89,7 @@ if __name__ == '__main__':
         if os.path.exists(PIDFILE):
             with open(PIDFILE) as f:
                 os.kill(int(f.read()), signal.SIGTERM)
+                print('Program has exit')
         else:
             print('Not running', file=sys.stderr)
             raise SystemExit(1)
@@ -99,6 +101,8 @@ if __name__ == '__main__':
         remove_data()
         if os.path.exists(LOGFILE):
             os.remove(LOGFILE)
+        if os.path.exists(ERRFILE):
+            os.remove(ERRFILE)
         print('All data clean, program has exit')
 
     else:

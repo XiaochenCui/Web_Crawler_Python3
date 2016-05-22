@@ -7,6 +7,7 @@ from collections import deque
 
 from get_movie_info import get_movie_info
 from model import *
+from tool.print_tool import errprint
 
 
 class Search(object):
@@ -39,11 +40,12 @@ class Search(object):
             try:
                 self.traversal_queue(self.queue)
             except Exception as e:
-                print("Exception occured:")
+                errprint("----------------------------------------------------")
+                errprint("Exception occur when traversal queue:")
                 traceback.print_exc()
                 for url in self.queue:
                     url.save()
-                print("---{}---个url被临时导入数据库".format(len(self.queue)))
+                errprint("---{}---个url被临时导入数据库".format(len(self.queue)))
                 raise SystemExit(1)
 
     def traversal_queue(self, queue):
@@ -64,12 +66,21 @@ class Search(object):
                 continue
 
             # 提取影片信息
-            info = get_movie_info(url.url, data)
-            if info['index']:
-                print('电影---{}---的信息:\n{}'.format(info['name'], info))
-                movie = Movie(**info)
-                if movie:
-                    movie.update()
+            try:
+                info = get_movie_info(url.url, data)
+                if info['index']:
+                    print('电影---{}---的信息:\n{}'.format(info['name'], info))
+                    movie = Movie(**info)
+                    if movie:
+                        movie.update()
+
+            except  Exception as e:
+                errprint("----------------------------------------------------")
+                errprint("Exception occur when get movie:")
+                traceback.print_exc()
+                errprint("bad url: {}".format(url.url))
+                continue
+
 
             # 正则表达式提取页面中所有队列, 并判断是否已经访问过, 然后加入待爬队列
             link_regex = re.compile('href="(https?://movie\.douban\.com/subject/\d+).+?"')

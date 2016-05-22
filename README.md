@@ -29,23 +29,31 @@ python 3.3+
     $ python daemon.py stop
     ```
 
-2. 查看运行日志:
+2. 结束程序，删除数据库中所有数据及日志文件:
+
+    ```bash
+    $ python daemon.py clean
+    ```
+
+3. 查看运行日志:
 
     ```bash
     $ tail -f /tmp/daemon.log
     ```
 
-3. 查看进程pid:
+4. 查看进程pid:
 
     ```bash
     $ tail -f /tmp/daemon.pid
     ```
     
-4. 结束程序，删除数据库中所有数据及日志文件:
+5. 查看错误日志:
 
     ```bash
-    $ python daemon.py clean
+    $ tail -f /tmp/daemon.err
     ```
+    
+
 
 ## 更新日志
 

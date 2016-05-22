@@ -80,7 +80,11 @@ def get_movie_info(url_string, data):
     result = soup.find('span', {'class': 'year'})
     if result and result.text != '(？)' :
         i = result.text[1:-1]
-        info['release_year'] = i
+        try:
+            year = int(i)
+        except ValueError:
+            year = int(i[:4])
+        info['release_year'] = year
 
     # 抓取制片国家/地区
     link_regex = re.compile('制片国家/地区:</span>\s*(.+?)\s*<br')
@@ -125,4 +129,4 @@ def store_movie(url):
 
 # 测试get_movie_info
 # connect_mongodb()
-# store_movie("https://movie.douban.com/subject/4009950/")
+# store_movie("https://movie.douban.com/subject/3418557/")
