@@ -36,9 +36,10 @@ class Search(object):
             # 异常退出时将内存中的url存入数据库
             try:
                 self.traversal_queue(self.queue)
-            except Exception:
+            except Exception as e:
                 for url in self.queue:
                     url.save()
+
                 raise SystemExit(1)
 
     def traversal_queue(self, queue):

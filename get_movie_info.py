@@ -84,13 +84,15 @@ def get_movie_info(url_string, data):
 
     # 抓取制片国家/地区
     link_regex = re.compile('制片国家/地区:</span>\s*(.+?)\s*<br')
-    r = link_regex.findall(data)[0]
-    r_list = r.split('/')
-    s = set()
-    for i in r_list:
-        i = i.strip()
-        s.add(i)
-    info['producing_countries'] = s
+    result = link_regex.findall(data)
+    if result:
+        tmp_data = link_regex.findall(data)[0]
+        r_list = tmp_data.split('/')
+        s = set()
+        for i in r_list:
+            i = i.strip()
+            s.add(i)
+        info['producing_countries'] = s
 
     # 抓取主演
     info['starring'] = get_info_single('a', {'rel': 'v:starring'})
@@ -102,8 +104,8 @@ def get_movie_info(url_string, data):
     link_regex = re.compile('(编剧</span>(.|/s)+?</span>)')
     result = link_regex.findall(data)
     if result:
-        data = result[0][0]
-        info['screenwriter'] = get_info_single('a', data=data)
+        tmp_data = result[0][0]
+        info['screenwriter'] = get_info_single('a', data=tmp_data)
 
     # 更新抓取日期
     info['update_date'] = utc_time
@@ -122,5 +124,5 @@ def store_movie(url):
 
 
 # 测试get_movie_info
-# connect_mongodb()
-# store_movie("https://movie.douban.com/subject/5969311/")
+connect_mongodb()
+store_movie("https://movie.douban.com/subject/4009950/")
