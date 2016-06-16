@@ -58,20 +58,20 @@ python 3.3+
 ## 更新日志
 
 ### V 1.1
--bug修复  
--发生异常退出时将内存中的url存入数据库  
--加入clean命令  
+- bug修复  
+- 发生异常退出时将内存中的url存入数据库  
+- 加入clean命令  
 
 ### V 1.0
--数据库更换为mongodb  
--异常处理更完善  
--内存占用优化    
--后台运行  
+- 数据库更换为mongodb  
+- 异常处理更完善  
+- 内存占用优化    
+- 后台运行  
 
 ### V 0.1 alpha
--urllib更换为第三方库responses  
--加入了http分析器BeautifulSoup的支持  
--数据被存到mysql  
+- urllib更换为第三方库responses  
+- 加入了http分析器BeautifulSoup的支持  
+- 数据被存到mysql  
 
 ### V 0.0 alpha
--可以下载电影页面并保存到data文件夹  
+- 可以下载电影页面并保存到data文件夹  
